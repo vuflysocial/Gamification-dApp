@@ -5,7 +5,7 @@ const useCollectors = () => {
   const { Moralis, account } = useMoralis();
 
   const getDays = async () => {
-    const users = Moralis.Object.extend("RuneCollectors");
+    const users = Moralis.Object.extend("StreakCollectors");
     const query = new Moralis.Query(users);
     query.equalTo("ethAddress", account);
     const data = await query.first();
@@ -28,7 +28,7 @@ const useCollectors = () => {
       const newUser = new users();
 
       newUser.set("ethAddress", account);
-      newUser.set("runes", 0);
+      newUser.set("Streaks", 0);
       newUser.set("daysInARow", 0);
       newUser.set("lastCollected", "2022-01-01T01:00:00Z");
 
@@ -38,9 +38,9 @@ const useCollectors = () => {
   };
 
   const getLeaderBoard = async () => {
-    const users = Moralis.Object.extend("RuneCollectors");
+    const users = Moralis.Object.extend("StreakCollectors");
     const query = new Moralis.Query(users);
-    query.descending("runes");
+    query.descending("streaks");
     let data = await query.find();
     data = JSON.parse(JSON.stringify(data));
     data.forEach((e, i) => {

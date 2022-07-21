@@ -95,8 +95,8 @@ const App = ({ isServerInfo }) => {
                 defaultActiveKey="1"
                 tabPosition="left"
               >
-                <Tabs.TabPane tab={<span><FireFilled />My Runes</span>} key="1">
-                  <Gamify tab="runes" />
+                <Tabs.TabPane tab={<span><FireFilled />My Streaks</span>} key="1">
+                  <Gamify tab="streaks" />
                 </Tabs.TabPane>
                 <Tabs.TabPane tab={<span><TrophyFilled /> Leaderboard</span>} key="2">
                   <Gamify tab="leaderboard" />

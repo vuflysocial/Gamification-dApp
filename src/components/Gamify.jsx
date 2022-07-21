@@ -1,7 +1,7 @@
 import { Typography, Tag, Button, Table, Space, Card, Modal } from "antd";
 import { FireFilled } from "@ant-design/icons";
-import Runes from "../Runes.png";
-import RunesCollected from "../RunesCollected.png";
+import Streaks from "../Streaks.png";
+import StreaksCollected from "../StreaksCollected.png";
 import Mages from "../Mages.png";
 import Hoodie from "../Hoodie.png";
 import Blockie from "./Blockie";
@@ -91,23 +91,23 @@ export default function Gamify({ tab }) {
 
   const [daysStreak, setDaysStreak] = useState(-1);
   const [collected, setCollected] = useState(true);
-  const [userRunes, setUserRunes] = useState(0);
+  const [userStreaks, setUserStreaks] = useState(0);
   const [dataSource, setDataSource] = useState();
 
   function getUsers(i) {
     if (i === daysStreak && !collected) {
-      return "runeBtn2";
+      return "streakBtn2";
     } else {
-      return "runeBtn";
+      return "streakBtn";
     }
   }
 
   async function mintNFT() {
-    if (userRunes < 2000) {
+    if (userStreaks < 2000) {
       let secondsToGo = 5;
       const modal = Modal.error({
         title: "Hold Up!",
-        content: `Make sure you collect enough runes before collecting this reward`,
+        content: `Make sure you collect enough streaks before collecting this reward`,
       });
       setTimeout(() => {
         modal.destroy();
@@ -154,10 +154,10 @@ export default function Gamify({ tab }) {
     if (isInitialized && isAuthenticated) {
       const fetchStreak = async () => {
         const data = await getDays();
-        const { daysInARow, lastCollected, runes } = data.attributes;
+        const { daysInARow, lastCollected, streaks } = data.attributes;
         setDaysStreak(daysInARow);
         setCollected(moment(lastCollected).isSame(moment.utc(), "day"));
-        setUserRunes(runes);
+        setUserStreaks(streaks);
         const dataLeader = await getLeaderBoard();
         setDataSource(dataLeader);
       };
@@ -165,22 +165,22 @@ export default function Gamify({ tab }) {
     } else {
       setDaysStreak(-1);
       setCollected(true);
-      setUserRunes(0);
+      setUserStreaks(0);
     }
   }, [isInitialized, isAuthenticated]);
 
-  async function addRunes() {
-    const users = Moralis.Object.extend("RuneCollectors");
+  async function addStreaks() {
+    const users = Moralis.Object.extend("StreakCollectors");
     const query = new Moralis.Query(users);
     query.equalTo("ethAddress", account);
     const data = await query.first();
-    const { lastCollected, daysInARow, runes } = data.attributes;
+    const { lastCollected, daysInARow, streaks } = data.attributes;
 
     if (!lastCollected || !moment(lastCollected).isSame(moment.utc(), "day")) {
-      data.increment("runes", days[daysInARow]);
+      data.increment("streaks", days[daysInARow]);
       data.set("lastCollected", moment.utc().format());
       setCollected(true);
-      setUserRunes(runes + days[daysInARow]);
+      setUserStreaks(streaks + days[daysInARow]);
       if (daysInARow === 6) {
         data.set("daysInARow", 0);
         setDaysStreak(0);
@@ -201,8 +201,8 @@ export default function Gamify({ tab }) {
       title: "Success!",
       content: (
         <>
-          <p>You have collected some runes</p>
-          <img src={Runes} alt="" style={{ width: "280px" }} />
+          <p>You have collected some streaks</p>
+          <img src={Streaks} alt="" style={{ width: "280px" }} />
         </>
       ),
     });
@@ -215,7 +215,7 @@ export default function Gamify({ tab }) {
     let secondsToGo = 5;
     const modal = Modal.error({
       title: "Hold Up!",
-      content: `You can only collect runes once a day, please come back tomorrow`,
+      content: `You can only collect Streaks once a day, please come back tomorrow`,
     });
     setTimeout(() => {
       modal.destroy();
@@ -243,53 +243,53 @@ export default function Gamify({ tab }) {
       ),
     },
     {
-      title: "Runes Accumulated",
-      dataIndex: "runes",
-      key: "runes",
+      title: "Streaks Accumulated",
+      dataIndex: "streaks",
+      key: "streaks",
       align: "right",
     },
   ];
 
-  if (tab === "runes") {
+  if (tab === "streaks") {
     return (
       <div style={{ paddingLeft: "5vw", width: "70vw" }}>
         <Title level={2} style={{ color: "white" }}>
-          My Moralis Runes
+          My Streaks
         </Title>
         <p style={{ color: "gray" }}>
-          Collect Moralis Runes, climb the communnity leaderboard and claim
-          magical rewards
+          Collect Streaks, climb the communnity leaderboard and claim
+          lightning rewards
         </p>
 
         <div style={styles.collected}>
           <div style={styles.colHeading}>
-            <span>My Runes</span>
-            <p style={styles.count}>{userRunes}</p>
+            <span>My Streaks</span>
+            <p style={styles.count}>{userStreaks}</p>
           </div>
           <div>
-            <img src={Runes} alt="" />
+            <img src={Streaks} alt="" />
           </div>
         </div>
 
         <Tag color="rgba(47,79,79, 0.2)" style={{ color: "#21bf96" }}>
-          Collect Runes
+          Collect Streaks
         </Tag>
 
         <div style={styles.daily}>
           <div>
             <Title level={3} style={{ color: "white" }}>
-              Daily Rune Collection
+              Daily Streak Collection
             </Title>
             <p style={{ color: "gray" }}>
               If you visit us everyday you will have the opportunity to receive
-              bonus runes
+              bonus Streaks
             </p>
           </div>
           <Button
             style={collected ? styles.cantCollect : styles.collect}
-            onClick={() => addRunes()}
+            onClick={() => addStreaks()}
           >
-            Collect Runes
+            Collect Streaks
           </Button>
         </div>
         <div style={styles.claimrow}>
@@ -299,13 +299,13 @@ export default function Gamify({ tab }) {
                 <p style={{ fontSize: "12px" }}>{`Day ${i + 1}`}</p>
                 {i > daysStreak - 1 ? (
                   <img
-                    src={Runes}
+                    src={Streaks}
                     alt=""
                     style={{ width: "40%", margin: "6px auto" }}
                   />
                 ) : (
                   <img
-                    src={RunesCollected}
+                    src={StreaksCollected}
                     alt=""
                     style={{ width: "60%", margin: " auto" }}
                   />
@@ -331,15 +331,15 @@ export default function Gamify({ tab }) {
             Claim Your Rewards
           </Title>
           <Space size={"small"}>
-            <span style={{ color: "gray" }}> Your Runes:</span>
+            <span style={{ color: "gray" }}> Your Streaks:</span>
             <Tag color={"#324252"} style={{ height: "22px" }}>
-              <FireFilled /> {userRunes}
+              <FireFilled /> {userStreaks}
             </Tag>
           </Space>
         </div>
 
         <p style={{ color: "gray", marginBottom: "35px" }}>
-          Dillignetly collecting runes will allow you to claim amazing rewards
+          Dillignetly collecting Streaks will allow you to claim amazing rewards
           like NFTs and merch. Browse to see what you can afford.
         </p>
 
@@ -358,10 +358,10 @@ export default function Gamify({ tab }) {
             }
           >
             <Title level={5} style={{ color: "white" }}>
-              Rune Collector - Mage NFT
+              Streak Collector - Mage NFT
             </Title>
             <p style={{ color: "gray" }}>
-              Collect enough runes to earn the title of Rune Collector and join
+              Collect enough Streaks to earn the title of Rune Collector and join
               a community of Mage NFT holders.
             </p>
             <div style={styles.bottom}>
@@ -384,11 +384,11 @@ export default function Gamify({ tab }) {
             }
           >
             <Title level={5} style={{ color: "white" }}>
-              Moralis Merch - Hoodie
+              Streak Merch - Hoodie
             </Title>
             <p style={{ color: "gray" }}>
               Upgrade your wardrobe, by coverting your runes into some fresh
-              Moralis swag!
+              Streak swag!
             </p>
             <div style={styles.bottom}>
               <Space size={"small"}>
@@ -409,10 +409,10 @@ export default function Gamify({ tab }) {
     return (
       <div style={{ paddingLeft: "5vw", width: "70vw" }}>
         <Title level={2} style={{ color: "white" }}>
-          Moralis Rune Collectors Leaderboard
+          Streak Collectors Leaderboard
         </Title>
         <p style={{ color: "gray" }}>
-          Ranking of mages with the highest number of runes accumulated
+          Ranking of mages with the highest number of streaks accumulated
         </p>
         {dataSource && (
           <Table
